@@ -1,0 +1,138 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'okr/css/report.css' %}"/>
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'okr:report' %}">Reports</a></li>
+    <li><a class="active">{{ object.get_key }}</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">
+            {{ object.key_result }}
+        </div>
+        <div class="section-sub-heading">
+            <div class="badge badge-secondary">
+                {{ object.get_key }} - {{ object.created }}
+            </div>
+            {% if object.percentage > 0 %}
+                <div class="progress" style="margin-top: 20px;">
+                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                         role="progressbar"
+                         aria-valuenow="{{ object.percentage }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         style="width: {{ object.percentage }}%">
+                        {{ object.percentage }}%
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="section-clear">
+        <div class="">
+            <div class="row">
+                <div class="col-md-3 section" style="">
+                    <h4>Users</h4>
+                    <div class="">
+                        {% for u in users %}
+                            <span onclick="$('.user-objectives').hide();$('#user{{ u.id }}').slideDown();"
+                                  class="badge-large">
+                                <span class="badge badge-info">{{ u.username }}</span> {{ u.get_full_name }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-9" style="">
+                    <div class="section">
+                        <div class="section-heading">Objectives & Key Results</div>
+                        <div class="section-sub-heading">Click a user to view linked objectives and key results.</div>
+                    </div>
+                    <div class=" section">
+                        {% for u in users %}
+                            <div class="user-objectives" id="user{{ u.id }}"
+                                 style="{% if forloop.counter == 1 %}{% else %}display: none;{% endif %}">
+                                <h5><span class="badge badge-info">{{ u.username }}</span> {{ u.get_full_name }}</h5>
+                                {% for objective in objectives %}
+                                    {% if objective.global_key_result.id == object.id %}
+                                        {% if objective.user == u %}
+                                            <div class="bg-light" style="padding: 20px; margin-bottom: 10px;">
+                                                <h5>{{ objective.objective }}</h5>
+                                                <ul class="list-group">
+                                                    {% for key_result in objective.get_key_results %}
+                                                        <li class="list-group-item {% if key_result.is_complete %}list-group-item-success{% endif %}">
+                                                            {{ key_result.result }}
+                                                            {% if key_result.percentage > 0 and not key_result.is_complete %}
+                                                                <div class="progress" style="margin-top: 20px;">
+                                                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                                                         role="progressbar"
+                                                                         aria-valuenow="{{ key_result.percentage }}"
+                                                                         aria-valuemin="0"
+                                                                         aria-valuemax="100"
+                                                                         style="width: {{ key_result.percentage }}%">
+                                                                        {{ key_result.percentage }}%
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% empty %}
+                                                        <span style="color: indianred;">No key results.</span>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Topping');
+            data.addColumn('number', 'Slices');
+            data.addRows([
+                ['Completed', {{ object.complete_percentage }}],
+                ['Incomplete', {{ object.incomplete_percentage }}],
+                ['Null', {{ object.null_percentage }}],
+            ]);
+
+            var options = {
+                'title': '{{ object.get_key }} Statistics',
+                'width': 400,
+                'height': 300,
+                'colors': ['#00AA00', '#ffbf00', '#FF0000']
+
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
+{% endblock %}

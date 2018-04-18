@@ -1,0 +1,174 @@
+<script language="JavaScript">
+
+
+    var username;
+    username = '{{  user.first_name }}';
+
+
+    alert('Welcome, ' + username);
+
+
+    var card_names = ["card0", "card0.5", "card1", "card3", "card5", "card8", "card13", "card20", "card40", "card100", "coffee", "question"];
+
+    function clickCard2(object) {
+        for (card in card_names) {
+            document.getElementById(card_names[card]).style.backgroundColor = "tan";
+        }
+        object.style.backgroundColor = "pink";
+        document.getElementById("choice").value = object.value;
+    }
+
+    function clicksubmit() {
+        var mybr = ('&#13;&#10');
+        var varstory = document.getElementById("story").value;
+        var myTextArea = document.getElementById('bigtext');
+        myTextArea.innerHTML += mybr
+        myTextArea.innerHTML += "JIRA-" + varstory;
+        myTextArea.innerHTML += mybr
+        myTextArea.innerHTML += "https://jira.cbs.europe.intranet:8081/browse/SUM-" + varstory;
+        myTextArea.innerHTML += mybr
+
+//var a = document.createElement('a');
+//var linkText = document.createTextNode("my title text");
+//a.appendChild(linkText);
+//a.title = "my title text";
+//a.href = "https://jira.cbs.europe.intranet:8081/browse/SUM-"+varstory;
+//document.body.appendChild(a);
+
+//linktostory = document.body.appendChild(a);
+
+        linktostory.href = "https://jira.cbs.europe.intranet:8081/browse/SUM-" + varstory;
+        linktostory.innerHTML = ("JIRA-" + varstory);
+        linktostory.style.display = "initial";
+
+    }
+
+    function alert1() {
+        var varstory = document.getElementById("story").value;
+        var mybr = ('&#13;&#10');
+        alert(username + ' voted ' + choice.value + " for Story JIRA-" + varstory);
+        var myTextArea2 = document.getElementById('log');
+        myTextArea2.innerHTML += mybr;
+        myTextArea2.innerHTML += username + " voted " + choice.value + " for Story JIRA-" + varstory;
+        var madelink = "https://jira.cbs.europe.intranet:8081/browse/SUM-" + varstory;
+
+
+    }
+
+
+</script>
+
+<style>
+
+
+    div.tables table {
+        width: 100px;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    div.tables {
+        width: 500px;
+    }
+
+    .cardbutton {
+        color: black;
+        text-align: center;
+        text-decoration: none;
+        font-size: 25px;
+        width: 100px;
+        height: 150px;
+        background-color: tan;
+        border: 4px solid green;
+        border-radius: 12px;
+        align: center;
+        text-align: center;
+    }
+
+    #outer {
+        width: 100%;
+        text-align: center;
+    }
+
+    body {
+        background-image: url(% static 'img/Logo-12gi.png' %} "); background-position: center bottom; background-repeat: no-repeat; background-image: url(" tans.png "); } h1, h2, h3, h4, h5 { font-family: 'ING Me' , cursive !important; } p { font-family: 'Ing Me' , cursive !important; } < / head >
+</style>
+
+
+<div id="outer">
+    <P>
+    <h3>Planning poker</h3></P>
+
+    <P>Story Points Selected: <input type="text" class="field left" id="choice" readonly></P>
+</div>
+<center>
+    <table style="display: inline-block;">
+
+        <tr>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="0" id="card0" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="0.5" id="card0.5" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="1" id="card1" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="3" id="card3" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="5" id="card5" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="8" id="card8" \></td>
+        </tr>
+
+        <tr>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="13" id="card13" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="20" id="card20" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="40" id="card40" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="100" id="card100" \></td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="Coffee" id="coffee" \>
+            </td>
+            <td><input type="button" onClick="clickCard2(this)" class="cardbutton" value="?" id="question" \></td>
+        </tr>
+
+    </table>
+
+    <table style="display: inline-block;">
+        <tr>
+            <td><textarea readonly style="resize: none" rows=13 cols="20" id="log"> </textarea></td>
+        </tr>
+    </table>
+
+    <p>
+        <button type="button" id="buttonvote" onClick="alert1(this)"> Vote</button>
+    </p>
+
+    <table>
+        <tr>
+            <p>
+            <h3>Jira Stories</h3></p>
+            <p>Input a Jira Story: (number only) <input type="text" class="field left" id="story"></p>
+            <p>
+                <button type="button" id="storyfield" onClick="clicksubmit(this)"> Submit Jira Story</button>
+            </p>
+            <p></p>
+            <p>
+            <h3 style="display:none;"> Stories </h3></p>
+            <p><textarea readonly rows=6 cols=100 id="bigtext" style="display:none;"> </textarea></p>
+
+
+            <h4>Stories</h4>
+            <a href="https://www.google.co.uk/html/" id="linktostory" style="display:none;"> Link to Story </a>
+
+
+            <script type="text/javascript">
+                document.getElementById("box").contentEditable = 'true';
+            </script>
+
+        </tr>
+
+    </table>
+
+
+</center>
+
+
+var varstory = document.getElementById("story").value;
+var mybr = ('&#13;&#10');
+alert(username + ' voted ' + card_value + " for Story JIRA-" + varstory);
+var myTextArea2 = document.getElementById('log');
+myTextArea2.innerHTML += mybr;
+myTextArea2.innerHTML += username + " voted " + card_value + " for Story JIRA-" + varstory;
+var madelink = "https://jira.cbs.europe.intranet:8081/browse/SUM-" + varstory;

@@ -1,0 +1,44 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'okr:globalobjective-list' %}">Global Objectives</a></li>
+    <li><a class="active">New Global Objective</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">Add New Global Objective</div>
+        <div class="section-sub-heading">Please enter a new global objective for this year.</div>
+    </div>
+    <div class="section">
+        <div class="section-data">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="">
+                    <button class="btn btn-success"><i class="fas fa-plus"></i> Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

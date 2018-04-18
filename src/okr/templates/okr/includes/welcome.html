@@ -1,0 +1,129 @@
+{% extends 'okr/base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <div class="section">
+            <div class="jumbotron center">
+                <img class="logo" src="{% static 'okr/img/new_logo.png' %}" width="300"/>
+                <h1 class="display-4">Welcome to Achieve</h1>
+                <p class="lead">Track progress. Record work. Achieve potential.</p>
+                <p class="lead">
+                </p>
+            </div>
+            <div class="section-data">
+                <h4>Looks like it is your first time here. Please fill out the form below to continue.</h4>
+            </div>
+            <br/>
+            <div class="section-data">
+                <form class="form-group" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="question-group form-group">
+                            <div class="question">Are you a manager?
+                                <span class="badge badge-danger"> CAUTION: Cannot be reversed</span>
+                            </div>
+                            <div class="answers">
+                                <div class="radio">
+                                    <label><input type="radio" value="true" name="is_manager" id="is_manager_yes"/> Yes</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" value="false" name="is_manager" id="is_manager_no"/>
+                                        No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="question-group form-group" id="question2" style="display: none;">
+                            <label class="question" for="select_team">Is your team on this list?</label>
+                            <div class="answers">
+                                <select class="form-control" name="team_on_list" id="select_team">
+                                    <option value='' disabled selected>Choose Team</option>
+                                    {% for team in all_teams %}
+                                        <option value='{{ team.name }}'>{{ team.name }}</option>
+                                    {% endfor %}
+                                    <option value='negative'>Not here</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="hide_group question-group form-group" id="question3" style="display: none;">
+                            <label class="question" for="team_form">What is your team's name?</label>
+                            <div class="answers">
+                                <input class="form-control" type="text" name="team_name" id="team_form">
+                            </div>
+                        </div>
+                        <div class="hide_group question-group form-group" id="contact" style="display: none;">
+                            <label class="question">Your team doesn't seem to use Achieve yet! Contact your manager for
+                                more details.</label>
+                        </div>
+                        <div class="hide_group form-group" id="welcome_submit" style="display: none;">
+                            <button class="btn btn-success form-control" type="submit"> Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $("input[value='true']").click(function () {
+            $('.hide_group').hide();
+            if ($('#question2').css('display') == 'none') {
+                $('#question2').slideDown();
+            } else {
+                $('#select_team').val("notvalid");
+            }
+            $('#select_team').on('change', function () {
+                if (this.value == "negative" && $('#is_manager_yes').is(':checked')) {
+                    $('#question3').slideDown();
+                    $('#welcome_submit').hide();
+                    if ($('#team_form').val().length > 2) {
+                        $('#welcome_submit').fadeIn();
+                    }
+                } else {
+                    $('#question3').hide();
+                    $('#welcome_submit').fadeIn();
+                }
+            });
+        });
+
+        $('#team_form').keyup(function () {
+            if (this.value.length > 2) {
+                $('#welcome_submit').fadeIn();
+            }
+        });
+
+        $("input[value='false']").click(function () {
+            $('.hide_group').hide();
+            if ($('#question2').css('display') == 'none') {
+                $('#question2').slideDown();
+            } else {
+                $('#select_team').val("notvalid");
+            }
+
+            $('#select_team').on('change', function () {
+                if (this.value == "negative" && $('#is_manager_no').is(':checked')) {
+                    $('#contact').slideDown();
+                    $('#welcome_submit').hide();
+                } else {
+                    $('#contact').hide();
+                    $('#welcome_submit').fadeIn();
+                }
+            });
+        })
+    </script>
+{% endblock %}

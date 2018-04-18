@@ -1,0 +1,44 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'okr/css/guide.css' %}"/>
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a class="active">Wiki</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">Achieve Wiki</div>
+        <div class="section-sub-heading">Last updated: 12/12/2017 @ 12:30pm</div>
+    </div>
+    <div class="section">
+        <div class="section-data">
+            <h5>What is OKR?</h5>
+            <p style="line-height: 1.7;">
+                The OKR framework aims to define company and team <b>objectives</b> along with linked and <b>measurable
+                key results</b> to provide a critical thinking framework and ongoing discipline that seeks to ensure
+                employees work together, focusing their efforts to make <b>measurable contributions</b>. OKRs are
+                typically set at the company, team and personal levels and may be shared across the organization with
+                the intention of providing teams with <b>visibility of goals</b> to align and focus efforts.
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

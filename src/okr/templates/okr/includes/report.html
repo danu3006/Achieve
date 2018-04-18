@@ -1,0 +1,133 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'okr/css/report.css' %}"/>
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a class="active">Reports</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">Reports</div>
+        <div class="section-sub-heading">Please choose the nature of reporting below.</div>
+    </div>
+    <div class="section">
+        <div class="section-data">
+            <button onclick="$('.filter').hide();$('#' + $(this).data('target')).slideToggle();"
+                    data-target="by_global_objective"
+                    class="btn
+            btn-secondary">by
+                Global
+                Objective
+            </button>
+            <button onclick="$('.filter').hide();$('#' + $(this).data('target')).slideToggle();" data-target="by_user"
+                    class="btn btn-secondary">by User
+            </button>
+            {#            <button onclick="$('.filter').hide();$('#' + $(this).data('target')).slideToggle();" data-target="by_team"#}
+            {#                    class="btn btn-secondary">by Team#}
+            {#            </button>#}
+        </div>
+    </div>
+    <div class="section">
+        <div class="filter section-data" id="by_global_objective" style="">
+            {% for global_objective in global_objectives %}
+                <div class="global_objective">
+                    <h5 onclick="$('.global_key_results').slideUp();
+                            $('#global_key_results_{{ global_objective.pk }}').slideDown();">
+                        {{ global_objective.objective }}
+                        <span class="-caret-down">&#9662;</span>
+                    </h5>
+                    <div class="global_key_results" id="global_key_results_{{ global_objective.pk }}"
+                         style="{% if forloop.counter == 1 %}{% else %}display: none;{% endif %}">
+                        <div class="card-group">
+                            {% for key_result in global_objective.get_key_results %}
+                                <div class="card-block">
+                                    <div class="card" style="width: 18rem; height: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ key_result.get_key }}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">{{ global_objective.quarter }}</h6>
+                                            <p class="card-text"
+                                               style="overflow-y: hidden !important;">{{ key_result.key_result|truncatechars:120 }}</p>
+                                            <a href="{% url 'okr:report-gkr-detail' key_result.pk %}" class="card-link">
+                                                <button class="btn btn-secondary">Show Report</button>
+                                            </a>
+                                            {% if key_result.percentage > 0 %}
+                                                <div class="progress" style="margin-top: 20px;">
+                                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                                         role="progressbar"
+                                                         aria-valuenow="{{ key_result.percentage }}"
+                                                         aria-valuemin="0"
+                                                         aria-valuemax="100"
+                                                         style="width: {{ key_result.percentage }}%">
+                                                        {{ key_result.percentage }}%
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <span style="color: indianred !important;">No members yet!</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="filter section-data" id="by_user" style="display: none;">
+            <div class="card-group">
+                {% for member in user.profile.team.get_members %}
+                    <div class="card-block">
+                        <div class="card" style="width: 17rem; height: 13rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ member.user.username }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ member.user.get_full_name|title }}</h6>
+                                {% if member.get_percentage > 0 %}
+                                    <div class="progress" style="">
+                                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                             role="progressbar"
+                                             aria-valuenow="{{ member.get_percentage }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100"
+                                             style="width: {{ member.get_percentage }}%">
+                                            {{ member.get_percentage }}%
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <br/>
+                                <div class="" style="text-align: center">
+                                    <a href="{% url 'okr:report-user-detail' member.pk %}" class="card-link"
+                                       style="margin-top: 20px !important;">
+                                        <button style="" class="btn btn-secondary">Show Report</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {#        <div class="filter section-data" id="by_team" style="display: none;">#}
+    </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    </script>
+{% endblock %}

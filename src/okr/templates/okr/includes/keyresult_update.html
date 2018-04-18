@@ -1,0 +1,46 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+    <a href="{% url 'okr:keyresult-delete' object.pk %}">
+        <button class="btn btn-danger">Delete Key Result</button>
+    </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'okr:objective-list' %}">Objectives</a></li>
+    <li><a href="{% url 'okr:objective-detail' object.objective.id %}">{{ object.objective.get_key }}</a></li>
+    <li><a class="active">{{ object.get_key }} - Edit</a></li>
+{% endblock %}
+
+{% block secondary %}
+    {#    <div class="section">#}
+    {#        <div class="section-heading">{{ object.result }}</div>#}
+    {#    </div>#}
+    <div class="section">
+        <div class="section-data">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="">
+                    <button class="btn btn-success"><i class="fas fa-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

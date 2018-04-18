@@ -1,0 +1,82 @@
+{% extends 'okr/base.html' %}
+
+
+{% block content %}
+    <div class="col-md-2 side-bar" style="display: block;">
+        <div class="side-bar-section">
+            <div class="side-bar-section-heading">
+                <i class="fas fa-home"></i> My Achieve
+            </div>
+            <div class="side-bar-section-links">
+                <li><a href="{% url 'okr:objective-list' %}">Objectives</a></li>
+                <li><a href="{% url 'okr:issue-list' %}">JIRA Issues</a></li>
+                <li><a href="{% url 'okr:report' %}">Reports</a></li>
+                {#                <li><a href="">Previous Quarters</a></li>#}
+                {#                <li><a href="">Other Years</a></li>#}
+            </div>
+        </div>
+        {% if user.profile.is_manager or user.is_staff %}
+            <div class="side-bar-section">
+                <div class="side-bar-section-heading">
+                    <i class="fas fa-globe"></i> Global
+                </div>
+                <div class="side-bar-section-links">
+                    <li><a href="{% url 'okr:globalobjective-list' %}">Global Objectives</a></li>
+                    {#                    <li><a href="">Manage Quarters</a></li>#}
+                    {#                    <li><a href="">Manage Years</a></li>#}
+                </div>
+            </div>
+            <div class="side-bar-section">
+                <div class="side-bar-section-heading">
+                    <i class="fas fa-cog"></i> Settings
+                </div>
+                <div class="side-bar-section-links">
+                    <li><a href="{% url 'okr:team-list' %}">Teams</a></li>
+                    {#                    <li><a href="">Users</a></li>#}
+                    <li><a href="{% url 'admin:index' %}">Administration Panel</a></li>
+                </div>
+            </div>
+        {% endif %}
+        <div class="side-bar-section">
+            <div class="side-bar-section-heading">
+                <i class="fas fa-book"></i> Misc
+            </div>
+            <div class="side-bar-section-links">
+                <li><a href="/okr/api">API</a></li>
+                <li><a href="{% url 'okr:guide' %}">Wiki</a></li>
+                <li><a href="{% url 'okr:poker' %}">Poker</a></li>
+                {#                    <li><a href="">Documentation</a></li>#}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10 x-uni-padding">
+        <div class="under-header">
+            <div class="{{ container }}">
+                <div class="breadcrumb">
+                    {% block breadcrumbs %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class=" x-uni-padding scroll">
+            <div class="messages">
+                {% if messages %}
+                    <div class="col-md-12 message-group">
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %}
+                                    class="message {{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="buttons">
+                {% block underheader %}
+                {% endblock %}
+            </div>
+            {% block secondary %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

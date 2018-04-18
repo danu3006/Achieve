@@ -1,0 +1,114 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <link href="{% static 'okr/css/objective.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+    <a href="{% url 'okr:issue-add' %}">
+        <button class="btn btn-success"><i style="margin-right: 5px !important;" class="fas fa-plus"></i> Add Issue
+        </button>
+    </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a class="active">JIRA Issues</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">Your JIRA Issues</div>
+        <div class="section-sub-heading">Data pulled everyday at 9am and 2pm GMT.</div>
+    </div>
+    <div class="section">
+        <div class="section-data">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Key</th>
+                    <th scope="col">Summary</th>
+                    <th scope="col">Key Results Linked</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for issue in object_list_incomplete %}
+                    <tr class="{% if issue.tmp_status %}issue-temp{% endif %}">
+                        <th scope="row">
+                            {% if issue.tmp_status %}
+                                <span style="margin-right: 4px;" class="badge badge-warning" title="No data pulled
+                                     yet
+                                    .">T</span>
+                            {% endif %}
+                            <a href="{% url 'okr:issue-detail' issue.pk %}">{{ issue.key }}</a>
+                        </th>
+                        <td>
+                            {% if issue.tmp_status %}
+                                <span style="color: indianred;">
+                                        Summary not updated.
+                                    </span>
+                            {% else %}
+                                {{ issue.summary }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for key_result in issue.get_linked_key_results %}
+                                <a href="{% url 'okr:objective-detail' key_result.objective.pk %}"><span
+                                        class="badge
+                                    badge-secondary"
+                                >{{ key_result.get_key }}</span></a><br/>
+                            {% empty %}
+                                <span style="color: indianred;">None.</span>
+                            {% endfor %}
+                        </td>
+                        <td><span class="badge badge-danger">{{ issue.status }}</span></td>
+                    </tr>
+                {% endfor %}
+                {% for issue in object_list_complete %}
+                    <tr class="issue-completed">
+                        <th scope="row">
+                            <a href="{% url 'okr:issue-detail' issue.pk %}">{{ issue.key }}</a>
+                        </th>
+                        <td>
+                            {% if issue.tmp_status %}
+                                <span style="color: indianred;">
+                                        Summary not updated.
+                                    </span>
+                            {% else %}
+                                {{ issue.summary }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for key_result in issue.get_linked_key_results %}
+                                <a href="{% url 'okr:objective-detail' key_result.objective.pk %}"><span
+                                        class="badge
+                                    badge-secondary"
+                                >{{ key_result.get_key }}</span></a><br/>
+                            {% empty %}
+                                <span style="color: indianred;">None.</span>
+                            {% endfor %}
+                        </td>
+                        <td><span class="badge badge-success">{{ issue.status }}</span><br/>
+                            {{ issue.created.date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    </script>
+{% endblock %}

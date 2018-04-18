@@ -1,0 +1,167 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+    <a onclick="$('#add_members').slideToggle();" style="cursor: pointer;">
+        <button class="btn btn-success"><i style="margin-right: 5px !important;" class="fas fa-plus"></i> New Member
+        </button>
+    </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'okr:team-list' %}">Team</a></li>
+    <li><a class="active">{{ object.name }} - Members</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section" id="add_members" style="display: none;">
+        <div class="section-heading">Add Members</div>
+        <div class="section-sub-heading">You can add members to this team even if they belong to another team.</div>
+        <div class="section-data">
+            <div class="row">
+                <div class="col-md-4">
+
+                    <div style="height: 30vh; overflow: auto">
+                        <ul class="list-group" style="border-radius: 4px !important;">
+                            {% for u in users %}
+                                <li onclick="add_user($(this).html());" class="list-group-item">{{ u.username }}</li>
+                            {% empty %}
+                                <span style="color: indianred;">No users found!</span>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <h5>Selected Users</h5>
+                    <p style="height: 20vh; overflow: auto" id="selected_users"></p>
+                    <hr class="my-3"/>
+                    <button onclick="add_to_team();" class="btn btn-success">Add</button>
+                    <button onclick="clear_all();" class="btn btn-danger">Clear All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-heading">Team: <i>{{ object.name }}</i></div>
+        <div class="section-sub-heading">Below are the members of the above team.</div>
+        <div class="section-data">
+            <div class="card-group">
+                {% for profile in object.get_members %}
+                    <div class="card-block">
+                        <div class="card" style="width: 20rem !important; margin: 10px !important;">
+                            <h4 class="card-title">
+                                {{ profile.user.get_full_name }}<br/>
+                                <div class="badge badge-secondary">
+                                    {{ profile.get_title }}</div>
+                            </h4>
+                            <div class="card-text">
+                                <button onclick="$('#user-objectives-{{ profile.id }}').slideToggle();" class="btn
+                                btn-primary">View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <span style="color: indianred !important;">No members yet!</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class=user-objectives"">
+        {% for profile in object.get_members %}
+            <div class="section" style="display: none;" id="user-objectives-{{ profile.id }}">
+                <div class="section-heading">{{ profile.user.username }} - {{ profile.user.get_full_name }}</div>
+                <div class="section-sub-heading"></div>
+                <div>
+                    {% for objective in profile.get_objectives %}
+                        <div class="" style="margin: 10px !important;">
+                            <div class="section-heading">{{ objective.objective }}</div>
+                            <div class="section-sub-heading"></div>
+                            <ul class="list-group">
+                                {% for keyresult in objective.get_key_results %}
+                                    <li class="list-group-item">{{ keyresult.result }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div><br/>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+
+        var selected_users = [];
+
+        function add_user(username) {
+            if (!selected_users.includes(username)) {
+                selected_users.push(username);
+            }
+            draw_selected_users();
+        }
+
+        function draw_selected_users() {
+            var string = '';
+
+            for (var i = 0; i <= selected_users.length - 1; ++i) {
+                string += '<div style="padding: 10px; border: 1px solid #EEE; margin: 5px;">' + selected_users[i] + '</div>';
+            }
+
+            $('#selected_users').html(string);
+
+        }
+
+        function clear_all() {
+            selected_users = [];
+            draw_selected_users();
+        }
+
+        function add_to_team() {
+
+            var done = 1;
+
+            for (var i = 0; i <= selected_users.length - 1; ++i) {
+
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.onreadystatechange = function () {
+                    done++;
+                };
+
+                xhttp.open("GET", "/api/team/{{ object.pk }}/add/" + selected_users[i] + "/", true);
+                xhttp.send();
+
+            }
+
+            location.reload(true);
+        }
+
+        function remove_from_team(username) {
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+            };
+
+            xhttp.open("DELETE", "/api/team/{{ object.pk }}/add/" + username + "/", true);
+            xhttp.send();
+
+
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,236 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <link href="{% static 'okr/css/objective.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a class="active">Objectives</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="section-heading">All Objectives</div>
+                <div class="section-sub-heading">The following objectives are listed for <b>{{ current_quarter }}</b>.
+                </div>
+            </div>
+            <div class="col-md-3">
+                <a title="New Objective" href="{% url 'okr:objective-add' %}">
+                    <button class="btn btn-success"><i style="" class="fas fa-plus"></i>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-data">
+            <div style="display: inline-block;" id="chart_div1"></div>
+        </div>
+    </div>
+    <div class="section">
+        <h5>Active Objectives</h5>
+        <div class="section-data">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Key</th>
+                    <th scope="col">Summary</th>
+                    <th scope="col">JIRA Issues</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for objective in object_list_incomplete %}
+                    <tr class="{% if objective.is_complete %}issue-completed{% endif %}">
+                        <th scope="row" width="80px;"><a href="{% url 'okr:objective-detail' objective.pk %}">
+                            {% if objective.is_complete %}
+                                <span class="badge badge-success">{{ objective.get_key }}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ objective.get_key }}</span>
+                            {% endif %}
+                        </a></th>
+                        <td width="1000px;">
+                            <a style="font-size: 16px;" href="{% url 'okr:objective-detail' objective.pk %}">
+                                {{ objective.objective }}
+                            </a>
+                            {% if objective.percentage > 0 %}
+                                <div class="progress" style="margin-top: 10px;">
+                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                         role="progressbar"
+                                         aria-valuenow="{{ objective.percentage }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100"
+                                         style="width: {{ objective.percentage }}%">
+                                        {{ objective.percentage }}%
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td scope="row" width=";">
+                            {% for key_result in objective.get_key_results %}
+                                {% for issue in key_result.jira_issues.all %}
+                                    <a href="{% url 'okr:issue-detail' issue.pk %}" style="margin-right: 2px;">
+                                        <span class="badge {% if issue.status %}badge-success{% else %}badge-secondary{% endif %}">
+                                            {{ issue.key }}
+                                        </span>
+                                    </a><br/>
+                                {% endfor %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <span class="badge {% if objective.is_complete %}badge-success{% else %}
+                            badge-danger{% endif %}">
+                                {{ objective.is_complete }}
+                            </span>
+                        </td>
+                        <td width="150px;">
+                            <a href="{% url 'okr:objective-update' objective.pk %}">
+                                <button style="" class="btn
+                            btn-secondary"><i
+                                        style="color: ;"
+                                        class="fas
+                            fa-pen-square"></i></button>
+                            </a>
+                            <a href="{% url 'okr:objective-delete' objective.pk %}">
+                                <button class="btn btn-danger"><i style="color: white !important;"
+                                                                  class="fas fa-minus-square"></i></button>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5"><span
+                                style="color: indianred;">No objectives registered for this quarter.</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="section">
+        <h5>Completed Objectives</h5>
+        <div class="section-data">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Key</th>
+                    <th scope="col">Summary</th>
+                    <th scope="col">JIRA Issues</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for objective in object_list_complete %}
+                    <tr class="{% if objective.is_complete %}issue-completed{% endif %}">
+                        <th scope="row" width="80px;"><a href="{% url 'okr:objective-detail' objective.pk %}">
+                            {% if objective.is_complete %}
+                                <span class="badge badge-success">{{ objective.get_key }}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ objective.get_key }}</span>
+                            {% endif %}
+                        </a></th>
+                        <td width="1000px;">
+                            <a style="font-size: 16px;" href="{% url 'okr:objective-detail' objective.pk %}">
+                                {{ objective.objective }}
+                            </a>
+                            {% if objective.percentage > 0 %}
+                                <div class="progress" style="margin-top: 10px;">
+                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                         role="progressbar"
+                                         aria-valuenow="{{ objective.percentage }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100"
+                                         style="width: {{ objective.percentage }}%">
+                                        {{ objective.percentage }}%
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td scope="row" width=";">
+                            {% for key_result in objective.get_key_results %}
+                                {% for issue in key_result.jira_issues.all %}
+                                    <a href="{% url 'okr:issue-detail' issue.pk %}" style="margin-right: 2px;">
+                                        <span class="badge {% if issue.status %}badge-success{% else %}badge-secondary{% endif %}">
+                                            {{ issue.key }}
+                                        </span>
+                                    </a><br/>
+                                {% endfor %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <span class="badge {% if objective.is_complete %}badge-success{% else %}
+                            badge-danger{% endif %}">
+                                {{ objective.is_complete }}
+                            </span>
+                        </td>
+                        <td width="150px;">
+                            <a href="{% url 'okr:objective-update' objective.pk %}">
+                                <button style="" class="btn
+                            btn-secondary"><i
+                                        style="color: ;"
+                                        class="fas
+                            fa-pen-square"></i></button>
+                            </a>
+                            <a href="{% url 'okr:objective-delete' objective.pk %}">
+                                <button class="btn btn-danger"><i style="color: white !important;"
+                                                                  class="fas fa-minus-square"></i></button>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5"><span
+                                style="color: indianred;">No objectives completed this quarter.</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Topping');
+            data.addColumn('number', 'Slices');
+            data.addRows([
+                ['Completed', {{ user.profile.get_percentage }}],
+                ['Incomplete', {{ incomplete_percentage }}],
+            ]);
+
+            var options = {
+                'title': '{{ current_quarter }} Statistics',
+                'width': 400,
+                'height': 300,
+                'colors': ['#00AA00', '#DD0000']
+
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
+            chart.draw(data, options);
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,11 @@
+django
+djangorestframework
+django-crontab
+django-extensions
+django-crispy-forms
+django-braces
+django-python3-ldap
+jira
+django-hijack-admin
+django-hijack
+django_admin_generator

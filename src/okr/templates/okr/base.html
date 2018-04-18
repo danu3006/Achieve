@@ -1,0 +1,76 @@
+{% spaceless %}
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        {% load static %}
+        {% load hijack_tags %}
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+        <!-- CSS / JS -->
+        <link rel="stylesheet" href="{% static 'okr/bs4/bootstrap.min.css' %}">
+        <script src="{% static 'okr/fa/on-server/js/fontawesome-all.js' %}" rel="stylesheet"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <link href="{% static 'okr/fonts/fonts.css' %}" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}"/>
+
+        <!-- Dynamic Imports -->
+        {% block head %} {% endblock %}
+
+        <!-- Fav Icon -->
+        <link rel="icon" type="image/png" href="{% static 'okr/img/fav_icon.png' %}"/>
+
+        <title>Achieve {% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'okr/css/okr.css' %}"/>
+    </head>
+
+    <body>
+    {% hijack_notification %}
+    {% with 'container-fluid' as container %}
+        <div class="header">
+            <div class="{{ container }}">
+                <div class="float-left">
+                    <a href="{% url 'okr:index' %}" class="logo" style="color: white !important;">
+                        <span style="letter-spacing: 3px !important; font-weight: 300 !important;">ACHIEVE</span>
+                    </a>
+                </div>
+                <div class="float-right">
+                    {% if request.user.is_authenticated %}
+                        <span style="font-weight: 300 !important; font-size: 14px; margin-right: 40px;" class="badge
+                        badge-primary"
+                        >{{ user.get_full_name|title }} ({{ user.profile.team.name }})</span>
+                        <a href="{% url 'okr:logout' %}">
+                            <i style="color: #FFF !important;" class="fas fa-sign-out-alt"></i>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'okr:login' %}">
+                            <button class="btn btn-primary">Login</button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="{{ container }}" id="contents">
+            <div class="row">
+                <!-- Main Content Area -->
+                {% block content %} {% endblock %}
+            </div>
+        </div>
+    {% endwith %}
+
+    <!-- User Javascript -->
+    <script src="{% static 'okr/js/jquery3_21.js' %}"></script>
+
+    <!-- Dynamic Scripts -->
+    {% block script %} {% endblock %}
+
+    </body>
+
+    </html>
+{% endspaceless %}

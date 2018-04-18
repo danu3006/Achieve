@@ -1,0 +1,64 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'okr:issue-list' %}">JIRA Issues</a></li>
+    <li><a class="active">Add</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">Add JIRA Issue</div>
+        <div class="section-sub-heading">All issues will be pulled from JIRA everyday at 9am and 2pm GMT.</div>
+    </div>
+    <div class="section">
+        <div class="section-data">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="" id="save">
+                    <button class="btn btn-success"><i class="fas fa-plus"></i> Add</button>
+                </div>
+                <div class="" id="error" style="display: none;">
+                    <span style="color: indianred;">Issue already added!</span>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        let issues = '{{ issues }}'.split(',');
+        $('#id_key').keyup(function () {
+            let issue_key = this.value;
+            if (!issue_key.startsWith('SUM-')) {
+                issue_key = 'SUM-' + issue_key;
+            }
+            if (issues.indexOf(issue_key) >= 0) {
+                $('#save').hide();
+                $('#error').slideDown();
+                $('#id_key').keypress(function (event) {
+                    if (event.keyCode == 13) {
+                        event.preventDefault();
+                    }
+                });
+            } else {
+                $('#save').slideDown();
+                $('#error').hide();
+            }
+        })
+    </script>
+{% endblock %}

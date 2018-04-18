@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400');
+
+.global_key_results {
+    margin-bottom: 40px;
+    padding: 20px;
+}
+
+.global_objective > h5 {
+    background: #FAFAFA !important;
+    -webkit-font-smoothing: antialiased !important;
+    padding: 10px;
+    cursor: pointer !important;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.badge-large {
+    padding: 10px 20px;
+    display: block;
+    background: #FAFAFA;
+    border: 1px solid #EEE !important;
+    margin-bottom: 3px;
+    cursor: pointer;
+}

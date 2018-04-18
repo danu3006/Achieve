@@ -1,0 +1,26 @@
+{% extends 'okr/base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12 center">
+        <div class="section no-padding">
+            <div class="jumbotron">
+                <h1 class="display-4">Welcome to Achieve</h1>
+                <p class="lead">Track Progress, record work, achieve potential.</p>
+                <p class="lead">
+                    <a href="{% url 'okr:objective-add' %}">
+                        {#                        <button class="btn btn-primary" type="submit">Get Started</button>#}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

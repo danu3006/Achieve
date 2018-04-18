@@ -1,0 +1,407 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'okr/css/poker.css' %}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a> Planning Poker </a></li>
+{% endblock %}
+
+{% block secondary %}
+
+    {% csrf_token %}
+    <div id="fromdatabase">
+        {% for poker in data %}
+            {{ poker.message }}
+        {% endfor %}
+    </div>
+    <div id="introtitle" style="position: fixed;
+    top: 43%;
+    left: 55%;
+    color: darkblue;
+
+   ">
+        <div class="fa-10x">
+            <i class="fas fa-cog fa-spin"></i>
+        </div>
+    </div>
+    <div id="introtitle2" style="position: fixed; top: 52%; left: 53%; display: none;">
+        <h2> Welcome, {{ user.first_name }}. </h2>
+    </div>
+    <div style="display: none;" id="POKERWHOLE">
+
+        <div class="section">
+            <div id="adminvoting" class="section-heading">
+
+                <h3 class="fa-1x">The Admin is picking a story to vote &nbsp; <i class="fas fa-spinner fa-pulse"></i>
+                </h3>
+
+            </div>
+        </div>
+
+        <div class="section-clear">
+            <div class="">
+                <div class="row">
+                    <div class="col-md-6 section">
+                        <div id="cardtable">
+                            <center>
+                                <table style="display: inline-block;">
+                                    <tr>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="0"
+                                                   id="card0" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton"
+                                                   value="0.5"
+                                                   id="card0.5" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="1"
+                                                   id="card1" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="3"
+                                                   id="card3" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="5"
+                                                   id="card5" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="8"
+                                                   id="card8" \></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="13"
+                                                   id="card13" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="20"
+                                                   id="card20" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton" value="40"
+                                                   id="card40" \></td>
+                                        <td><input type="button" onClick="clickCard(this)" class="cardbutton"
+                                                   value="100"
+                                                   id="card100" \></td>
+                                        <td>
+                                            <button onClick="clickCard(this)" class="cardbutton" value="?"
+                                                    id="question" \><i class="fa fa-question" style="font-size:30px"
+                                                                       style="font-size:28px"></i></button>
+                                        </td>
+                                        <td>
+                                            <button onClick="clickCard(this)" class="cardbutton"
+                                                    id="coffee" value="coffee"><i class="fa fa-coffee"
+                                                                                  style="font-size:30px"></i></button>
+                                        </td>
+                                    </tr>
+                                    <BR>
+                                </table>
+                                <div id="buttondiv" style="display: none">
+                                    <button type="submit" id="buttonvote" class="cardbuttonvote" onClick="vote()">
+                                        Vote
+                                    </button>
+                                </div>
+                            </center>
+                        </div>
+                        <center>
+                            <div id="thanks" style="display: none">
+                                <h2>Thanks for voting! Awaiting next story... <i class="fas fa-spinner fa-pulse"></i>
+                                </h2>
+
+                            </div>
+                        </center>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="section">
+
+                            <div class="section-heading">Votes
+                                <button id="refreshbutton" onClick="updateGet()" class="btn btn-success"
+                                        style="float: right"><i style=""
+                                                                class="fas fa-sync fa-spin"></i></button>
+                            </div>
+                            <hr>
+                            <div class="" id="user_area">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="section">
+
+                            <div class="section-heading">
+                                Add JIRA Story
+                                <button id="greenbutton" class="btn btn-success" style="float: right"><i style=""
+                                                                                                         class="fas fa-plus"></i>
+                                </button>
+                                <hr>
+
+                                <div id="numberonly" style="display: none">
+                                    <div class="section-sub-heading">
+                                        Number only
+                                        <input type="text" id="story" class="form-control">
+                                        <br>
+                                    </div>
+                                </div>
+
+                                <div id="description" style="display: none">
+                                    <div class="section-sub-heading">
+                                        Story Title
+                                    </div>
+                                    <input type="text" id="storydescription" class="form-control">
+                                    <br>
+                                </div>
+
+                                <div id="lastbutton" style="display: none">
+                                    <button id="storybutton" class="addstoryvote"> Add Story
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="section" id="storiestablediv" style="display: none;">
+            <div class="section-heading" id="storiestable">
+                Stories
+                <hr>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Story</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Story Points / Admin pick to vote</th>
+                    </tr>
+                    </thead>
+                    <tbody id="jirastories">
+                    {#    <tr>#}
+                    {#      <th scope="row">1</th>#}
+                    {#      <td>Mark</td>#}
+                    {#      <td>Otto</td>#}
+                    {#      <td>@mdo</td>#}
+                    {#    </tr>#}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="section" style="display: none" id="deletebutton">
+            <div id="deletebutton_button" class="section-heading">
+                <h3>Delete votes?
+                    <button type="submit" class="btn btn-danger btn-lg" onclick="deletevotes()">
+                        <svg class="svg-inline--fa fa-times fa-w-12" aria-hidden="true" data-prefix="fas"
+                             data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                             data-fa-i2svg="">
+                            <path fill="currentColor"
+                                  d="M323.1 441l53.9-53.9c9.4-9.4 9.4-24.5 0-33.9L279.8 256l97.2-97.2c9.4-9.4 9.4-24.5 0-33.9L323.1 71c-9.4-9.4-24.5-9.4-33.9 0L192 168.2 94.8 71c-9.4-9.4-24.5-9.4-33.9 0L7 124.9c-9.4 9.4-9.4 24.5 0 33.9l97.2 97.2L7 353.2c-9.4 9.4-9.4 24.5 0 33.9L60.9 441c9.4 9.4 24.5 9.4 33.9 0l97.2-97.2 97.2 97.2c9.3 9.3 24.5 9.3 33.9 0z"></path>
+                        </svg><!-- <i class="fas fa-times"></i> --> Delete
+                    </button>
+                </h3>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script language="JavaScript">
+        setTimeout(function () {
+            $('#introtitle').fadeOut("slow");
+        }, 1000);
+        setTimeout(function () {
+            $('#introtitle2').fadeIn("slow");
+        }, 1500);
+        setTimeout(function () {
+            $('#introtitle2').fadeOut("slow");
+        }, 4500);
+        setTimeout(function () {
+            $('#POKERWHOLE').fadeIn("slow");
+        }, 5000);
+
+        let storycounter = 0;
+        let storyvoter = "";
+
+        let username = '{{  user.first_name }}';
+        let corpkey = '{{ user.slug }}';
+        let current_card;
+        let card_names = ["card0", "card0.5", "card1", "card3", "card5", "card8",
+            "card13", "card20", "card40", "card100", "coffee", "question"];
+
+        function clickCard(el) {
+            for (let card in card_names) {
+                document.getElementById(card_names[card]).style.backgroundColor = "ghostwhite";
+            }
+            el.style.backgroundColor = "pink";
+            current_card = el.value;
+            $('#buttondiv').slideDown();
+        }
+
+        function vote() {
+            //let story_name = document.getElementById("story").value;
+            let story_name = storyvoter;
+
+            if (story_name != "") {
+                {#let post = $('#user_area').append("<h5>"+username + " voted " + current_card + " for Story " + story_name + "</h5>  \n <br>");#}
+
+                $("<div style=\"display: none;\"><h5>" + username + " voted " + current_card + " for Story " + story_name + "</h5></div>").appendTo($('#user_area')).slideDown();
+
+                let made_link = "https://jira.cbs.europe.intranet:8081/browse/SUM-" + story_name;
+                $('#buttondiv').slideUp();
+
+                for (let card in card_names) {
+                    document.getElementById(card_names[card]).style.backgroundColor = "ghostwhite";
+                }
+
+                $('#cardtable').slideUp();
+                $('#thanks').slideDown();
+                $('#deletebutton').slideDown();
+                update();
+            } else {
+                alert("Admin hasn't picked a story to vote!");
+            }
+        }
+
+        $('#greenbutton').on('click', function () {
+            $('#wholething').slideDown();
+            $('#numberonly').slideDown();
+
+        });
+
+        $('#story').on('keyup', function () {
+            $('#description').slideDown();
+
+        });
+
+        $('#storydescription').on('keyup', function () {
+            $('#storybutton').slideDown();
+            $('#lastbutton').slideDown();
+
+        });
+
+
+        $('#storybutton').on('click', function () {
+            storycounter++;
+            let mega = ('<tr> <th scope="row">' + storycounter + '</th> <td><a target="_blank"href="https://jira.cbs.europe.intranet:8081/browse/SUM-' + $('#story').val() + '">SUM-' + $('#story').val() + '</a></td> <td>' + $('#storydescription').val() + '</td> <td><button onclick="adminClick(this);" data-value="SUM-' + $('#story').val() + '" class="btn btn-success" style="float: right"><i style="" class="fas fa-plus" ></i></button></td> </tr>');
+
+            $(mega).appendTo($('#jirastories')).slideDown("slow");
+            $('#storiestablediv').slideDown();
+
+
+            {#$("<tr> <th scope=\"row\">" + storycounter + "</th> <td> <a target=\"_blank\"href=\"https://jira.cbs.europe.intranet:8081/browse/SUM-" + $('#story').val() + "\">SUM-" + $('#story').val() + "</a> </td> <td> "+ $('#storydescription').val() +" </td> <td> <button onclick=\"adminClick(this);\" data-value=\"SUM-\""+$('#story').val() +" class=\"btn btn-success\" style=\"float: right\"> <i style=\"\" class=\"fas fa-plus\"> </i> </button> </td> </tr>").appendTo($('#jirastories'));#}
+
+            $('#storiestablediv').slideDown();
+            $('#description').slideUp();
+            $('#numberonly').slideUp();
+            $('#lastbutton').slideUp();
+            $('#storybutton').slideUp();
+            $('#story').val(null);
+            $('#description').val(null);
+            $('#storydescription').val(null);
+
+
+        });
+
+        function adminClick(el) {
+            $('#adminvoting').slideUp();
+            $('#adminvoting').slideDown();
+            setTimeout(function () {
+                $('#adminvoting').html('Voting for Story <a target="_blank"href="https://jira.cbs.europe.intranet:8081/browse/' + $(el).attr('data-value') + '">' + $(el).attr('data-value') + '</a>');
+            }, 300);
+
+            storyvoter = $(el).attr('data-value');
+            $('#thanks').slideUp();
+            $('#cardtable').slideDown();
+
+        }
+
+        function deletevotes() {
+            $('#user_area').slideUp();
+            setTimeout(function () {
+                $('#user_area').empty();
+            }, 300);
+            $('#user_area').slideDown();
+            $('#deletebutton').slideUp();
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        let csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        function update() {
+
+            $.ajax({
+
+                url: '/poker/',
+                dataType: 'text',
+                type: 'post',
+                contentType: 'application/x-www-form-urlencoded',
+                data: dict = {
+                    "username": username,
+                    "cardpicked": current_card,
+                    "storyname": storyvoter,
+                    "message": username + " voted " + current_card + " for story " + storyvoter,
+                },
+                success: function () {
+                    alert("Data Posted!")
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+
+            });
+        }
+
+        function updateGet() {
+            $.ajax({
+                url: '/poker/',
+                type: 'get',
+                data: "message",
+                success: function (data) {
+                    alert(data)
+                }
+            });
+
+            $('#fromdatabase').appendTo($('#user_area')).slideDown();
+
+            {#            {% for poker in data %}#}
+            {#                {{ poker.message }}#}
+            {#            {% endfor %}#}
+            {##}
+            {#        .appendTo($('#user_area')).slideDown();#}
+        }
+
+
+    </script>
+
+
+{% endblock %}

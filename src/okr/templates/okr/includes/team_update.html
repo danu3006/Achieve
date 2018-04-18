@@ -1,0 +1,45 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+    <ul class="nav">
+        <li class="nav-item"><a href="{% url 'okr:team-add' %}"><i style="margin-right: 5px !important;"
+                                                                   class="fas fa-plus"></i> New Team</a></li>
+    </ul>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{% url 'okr:team-list' %}">Team</a></li>
+    <li><a class="active">{{ object.name }} - Update</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">{{ object.name }}</div>
+        <div class="section-sub-heading">You are currently amending the above Team</div>
+        <div class="section-data">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="">
+                    <button class="btn btn-success"><i class="fas fa-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

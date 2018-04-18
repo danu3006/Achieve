@@ -1,0 +1,98 @@
+{% extends 'okr/dashboard.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block underheader %}
+    <a href="{% url 'okr:team-add' %}">
+        <button class="btn btn-success"><i style="margin-right: 5px !important;" class="fas fa-plus"></i> New Team
+        </button>
+    </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a class="active">Teams</a></li>
+{% endblock %}
+
+{% block secondary %}
+    <div class="section">
+        <div class="section-heading">All Teams</div>
+        <div class="section-sub-heading">Listed are all the teams with in <i>Achieve</i>.</div>
+    </div>
+    <div class="section">
+        <div class="section-data" style="margin-bottom: 20px;">
+            <h5>My Teams</h5>
+            <div class="card-group">
+                {% for managed in user.profile.get_managed_teams %}
+                    <div class="card-block">
+                        <div class="card" style="width: 20rem !important; margin: 10px !important;">
+                            <h4 class="card-title">
+                                <a href="{% url 'okr:team-detail' managed.team.pk %}">{{ managed.team.name }}</a></h4>
+                            <p class="card-text">{{ object.objective }}</p>
+                            <div class="card-text">
+                                <a href="{% url 'okr:team-detail' managed.team.pk %}">
+                                    <button class="btn
+                                btn-primary">Members
+                                    </button>
+                                </a>
+                                <a href="{% url 'okr:team-update' managed.team.pk %}">
+                                    <button class="btn btn-secondary">Edit</button>
+                                </a>
+                                <a href="{% url 'okr:team-delete' managed.team.pk %}">
+                                    <button class="btn btn-secondary">Delete</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <span style="color: indianred !important;">You don't manage any Teams yet!</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-data">
+            <h5>Other Teams</h5>
+            <div class="card-group">
+                {% for team in object_list %}
+                    <div class="card-block">
+                        <div class="card" style="width: 20rem !important; margin: 10px !important;">
+                            <h4 class="card-title">
+                                <a>{{ team.name }}</a></h4>
+                            {#                            <div class="card-text">#}
+                            {#                                <a href="{% url 'okr:team-detail' team.pk %}">#}
+                            {#                                    <button class="btn#}
+                            {#                                btn-primary">Members#}
+                            {#                                    </button>#}
+                            {#                                </a>#}
+                            {#                                <a href="{% url 'okr:team-update' team.pk %}">#}
+                            {#                                    <button class="btn btn-secondary">Edit</button>#}
+                            {#                                </a>#}
+                            {#                                <a href="{% url 'okr:team-delete' team.pk %}">#}
+                            {#                                    <button class="btn btn-secondary">Delete</button>#}
+                            {#                                </a>#}
+                            {#                            </div>#}
+                        </div>
+                    </div>
+                {% empty %}
+                    <span style="color: indianred !important;">No other teams.</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    </script>
+{% endblock %}

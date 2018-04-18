@@ -1,0 +1,45 @@
+.dropdown {
+    background: #FFF;
+}
+
+.dropdown li {
+    padding: 10px;
+    list-style: none !important;
+    display: block;
+    border: 1px solid #EEE !important;
+    margin-bottom: 20px;
+}
+
+.dropdown li:hover {
+    cursor: pointer;
+}
+
+.dropdown li a {
+    color: #333 !important;
+}
+
+.dropdown li i {
+    margin-right: 10px;
+}
+
+.keyresult {
+    padding: 5px;
+    padding-left: 20px;
+}
+
+.keyresult:hover {
+    background: #FAFAFA;
+}
+
+.jira {
+    margin-bottom: 10px;
+    padding: 3px;
+    padding-left: 20px !important;
+}
+
+.jira span:hover {
+    background: #FFF !important;
+    border: 1px solid #EEE !important;
+    cursor: pointer !important;
+    color: #333 !important;
+}
